@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3>Image Classification App</h3>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <hr>
+        <form action="" method="post" class="form" role="form" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    {{ wtf.form_field(form.files, class='form-control', placeholder='UploadFiles') }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}
