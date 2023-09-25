@@ -13,3 +13,4 @@ s3transfer~=0.6.2
 six~=1.16.0
 urllib3~=1.26.16
 python-dotenv~=1.0.0
+multipledispatch~=1.0.0
