@@ -1,0 +1,17 @@
+import boto3
+import os
+
+AWS_REGION = os.getenv("AWS_REGION")
+SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
+SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID")
+SQS_SERVICE = os.getenv("SQS_SERVICE")
+
+sqsClient = boto3.client(SQS_SERVICE, region_name=AWS_REGION)
+
+def sendImageFileInputToSQS(s3PathToFile):
+    sqsClient.send_message(
+        QueueUrl=SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL,
+        MessageBody=s3PathToFile,
+        MessageGroupId=SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID
+    )
+

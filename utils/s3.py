@@ -2,7 +2,9 @@ import boto3
 import os
 
 S3_FILE_LOCATION = os.getenv("S3_LOCATION").format("image-classification-input")
-s3Client = boto3.client("s3")
+S3_SERVICE = os.getenv("S3_SERVICE")
+
+s3Client = boto3.client(S3_SERVICE)
 def addImageToS3ForWeb(fileToUpload, bucket):
     try:
         s3Client.upload_fileobj(
@@ -17,6 +19,7 @@ def addImageToS3ForWeb(fileToUpload, bucket):
         print("Exception in uploading file ", exception)
         return exception
     return "{}{}".format(S3_FILE_LOCATION, fileToUpload.filename)
+
 def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3):
     try:
         s3Client.upload_file(
