@@ -1,7 +1,8 @@
 import boto3
 import os
 
-S3_FILE_LOCATION = os.getenv("S3_LOCATION").format("image-classification-input")
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
+S3_FILE_LOCATION = os.getenv("S3_LOCATION").format(S3_BUCKET_NAME)
 S3_SERVICE = os.getenv("S3_SERVICE")
 
 s3Client = boto3.client(S3_SERVICE)
