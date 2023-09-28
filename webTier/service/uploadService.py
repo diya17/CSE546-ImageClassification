@@ -28,11 +28,10 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, apiReque
                 continue
             if len(uploadedFile.filename) > 0:
                 fileName = secure_filename(uploadedFile.filename)
-                # To-Do : have to change imageClassificationInput to env variable
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
                 os.makedirs(userDir, exist_ok=True)
                 uploadedFile.save(os.path.join(userDir, fileName))
-                uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME, userIp + '_' + fileName)
-                usersToFilesMap[userIp].add(userIp + '_' + fileName)
+                uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME, fileName)
+                usersToFilesMap[userIp].add(fileName)
                 print(uploadedS3Image)
                 sqsUtil.sendImageFileInputToSQS(uploadedS3Image)
