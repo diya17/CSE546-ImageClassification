@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 
 INPUT_BUCKET_NAME = os.getenv("INPUT_BUCKET_NAME")
 INPUT_LOCAL_STORAGE_DIR = os.getenv("INPUT_LOCAL_STORAGE_DIR")
+SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
+SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID")
 
 def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
     for uploadedFile in uploadedFilesList:
@@ -16,7 +18,7 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
             fileName = secure_filename(uploadedFile.filename)
             uploadedS3Image = s3Util.addImageToS3ForWeb(uploadedFile, INPUT_BUCKET_NAME)
             print(uploadedS3Image)
-            sqsUtil.sendImageFileInputToSQS(uploadedS3Image)
+            sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
             listOfFiles.append(fileName)
 
     return uploadedFilesForm, listOfFiles
@@ -34,4 +36,4 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, apiReque
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME, fileName)
                 usersToFilesMap[userIp].add(fileName)
                 print(uploadedS3Image)
-                sqsUtil.sendImageFileInputToSQS(uploadedS3Image)
+                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
