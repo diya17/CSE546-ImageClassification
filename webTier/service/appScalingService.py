@@ -6,8 +6,8 @@ import os
 SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
 MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
 appTierInstanceId = 1
-prevQueueSize = 0
 def scaleServiceUp():
+    prevQueueSize = 0
     while(True):
         currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
         print("Current number of messages in the queue " + str(currentQueueSize))
