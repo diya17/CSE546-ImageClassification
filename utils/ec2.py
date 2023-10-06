@@ -70,4 +70,5 @@ def getCountOfPendingOrRunningInstances():
         ]
     )
     for reservation in ec2Response["Reservations"]:
+        print(reservation['Instances'])
         return len(reservation['Instances'])
