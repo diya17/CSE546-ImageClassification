@@ -19,7 +19,6 @@ ec2Client = boto3.client(EC2_SERVICE,
                    region_name=AWS_REGION,
                    aws_access_key_id=AWS_ACCESS_KEY_ID,
                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-PENDING_AND_RUNNING_INSTANCES = ["pending", "running"]
 
 def createEC2Instance(instanceNumber):
     response = ec2Client.run_instances(
@@ -56,7 +55,7 @@ def describeEC2Instances():
         ]
     )
     return instances
-def getCountOfPendingOrRunningInstances():
+def getCountOfInstances(state):
     ec2Response = ec2Client.describe_instances(
         Filters=[
             {
@@ -65,7 +64,7 @@ def getCountOfPendingOrRunningInstances():
             },
             {
                 'Name': 'instance-state-name',
-                'Values': PENDING_AND_RUNNING_INSTANCES
+                'Values': state
             }
         ]
     )

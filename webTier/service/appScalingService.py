@@ -5,6 +5,7 @@ import os
 
 SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
 MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
+PENDING_AND_RUNNING_INSTANCES = ["pending", "running"]
 class AppScalingService():
 
     def __init__(self):
@@ -14,7 +15,7 @@ class AppScalingService():
         while (True):
             currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
             print("Current number of messages in the queue " + str(currentQueueSize))
-            numberOfPendingOrRunningInstances = ec2Util.getCountOfPendingOrRunningInstances()
+            numberOfPendingOrRunningInstances = ec2Util.getCountOfInstances(PENDING_AND_RUNNING_INSTANCES)
             if numberOfPendingOrRunningInstances is None:
                 numberOfPendingOrRunningInstances = 0
             print("Current number of instances in the app-tier " + str(numberOfPendingOrRunningInstances))
