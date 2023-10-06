@@ -3,9 +3,10 @@ import utils.sqs as sqsUtil
 import time
 import os
 
+SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
+MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
 class AppScalingService():
-    SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
-    MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
+
     def __init__(self):
         self.prevQueueSize = 0
         self.appTierInstanceId = 1
