@@ -18,10 +18,9 @@ class AppScalingService():
             if numberOfPendingOrRunningInstances is None:
                 numberOfPendingOrRunningInstances = 0
             print("Current number of instances in the app-tier " + str(numberOfPendingOrRunningInstances))
-
             newMessagesDelta = currentQueueSize - self.prevQueueSize
             self.prevQueueSize = currentQueueSize
-            if newMessagesDelta > int(MESSAGE_THRESHOLD):
+            if newMessagesDelta > 0:
                 numberOfInstancesToCreate = min(newMessagesDelta, 19 - numberOfPendingOrRunningInstances)
                 self.createEC2Instances(numberOfInstancesToCreate)
             time.sleep(5)
