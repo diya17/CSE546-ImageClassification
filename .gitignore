@@ -1,2 +1,8 @@
-
 .env
+utils/__pycache__
+.idea
+webTier/controllers/__pycache__
+webTier/__pycache__
+webTier/model/__pycache__
+webTier/service/__pycache__
+.DS_Store

@@ -2,7 +2,6 @@ import boto3
 import os
 
 AWS_REGION = os.getenv("AWS_REGION")
-SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
 SQS_SERVICE = os.getenv("SQS_SERVICE")
 MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
 
@@ -35,3 +34,9 @@ def receiveImageUrlFromSQS(sqsQueueUrl):
                 QueueUrl=SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, ReceiptHandle=message["ReceiptHandle"]
             )
     return receivedItems
+def getNumberOfQueueMessages(queueURL):
+    sqsResponse = sqsClient.get_queue_attributes(
+        QueueUrl= SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL,
+        AttributeNames=['ApproximateNumberOfMessages']
+    )
+    return int(sqsResponse['Attributes']['ApproximateNumberOfMessages'])

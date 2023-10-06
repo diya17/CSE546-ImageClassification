@@ -12,35 +12,41 @@ EC2_TAG_KEY_GROUP = os.getenv("EC2_TAG_KEY_GROUP")
 EC2_TAG_VALUE_GROUP = os.getenv("EC2_TAG_VALUE_GROUP")
 EC2_INSTANCE_TYPE = os.getenv("EC2_INSTANCE_TYPE")
 EC2_SECURITY_GROUP_ID = os.getenv("EC2_SECURITY_GROUP_ID")
+EC2_APP_INSTANCE_NAME_TAG = os.getenv("EC2_APP_INSTANCE_NAME_TAG")
+EC2_APP_INSTANCE_NAME_VALUE_PREFIX = os.getenv("EC2_APP_INSTANCE_NAME_VALUE_PREFIX")
 
 ec2Client = boto3.client(EC2_SERVICE,
                    region_name=AWS_REGION,
                    aws_access_key_id=AWS_ACCESS_KEY_ID,
                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+PENDING_AND_RUNNING_INSTANCES = ["pending", "running"]
 
-def createEC2Instance(maxCount):
-    instance_list = ec2Client.run_instances(
+def createEC2Instance(instanceNumber):
+    response = ec2Client.run_instances(
         ImageId=EC2_AMI_ID,
         MinCount=1,
-        MaxCount=maxCount,
-        InstanceType=EC2_INSTANCE_TYPE,  
+        MaxCount=1,
+        InstanceType=EC2_INSTANCE_TYPE,
         IamInstanceProfile={'Arn': EC2_IAM_INSTANCE_PROFILE},
         SecurityGroupIds=[EC2_SECURITY_GROUP_ID],
         TagSpecifications=[
-        {
-            'ResourceType': 'instance',
-            'Tags': [
-                {
-                    'Key': EC2_TAG_KEY_GROUP,
-                    'Value': EC2_TAG_VALUE_GROUP
-                },
-            ]
-        },
-    ],
+            {
+                'ResourceType': 'instance',
+                'Tags': [
+                    {
+                        'Key': EC2_TAG_KEY_GROUP,
+                        'Value': EC2_TAG_VALUE_GROUP
+                    },
+                    {
+                        'Key': EC2_APP_INSTANCE_NAME_TAG,
+                        'Value': EC2_APP_INSTANCE_NAME_VALUE_PREFIX+instanceNumber,
+                    }
+                ]
+            },
+        ],
         KeyName=EC2_KEY_NAME_PAIR,
     )
-    instance_id = instance_list['Instances'][0]['InstanceId']
-    return instance_id
+    print("Created Instance with Id : " + response['Instances'][0]['InstanceId'])
 
 
 def describeEC2Instances():
@@ -51,3 +57,18 @@ def describeEC2Instances():
         ]
     )
     return instances
+def getCountOfPendingOrRunningInstances():
+    ec2Response = ec2Client.describe_instances(
+        Filters=[
+            {
+                'Name': 'tag:{0}'.format(EC2_TAG_KEY_GROUP),
+                'Values': [EC2_TAG_VALUE_GROUP]
+            },
+            {
+                'Name': 'instance-state-name',
+                'Values': PENDING_AND_RUNNING_INSTANCES
+            }
+        ]
+    )
+    for reservation in ec2Response["Reservations"]:
+        return len(reservation['Instances'])
