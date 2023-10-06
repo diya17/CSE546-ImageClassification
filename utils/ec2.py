@@ -27,7 +27,6 @@ def createEC2Instance(instanceNumber):
         MinCount=1,
         MaxCount=1,
         InstanceType=EC2_INSTANCE_TYPE,
-        IamInstanceProfile={'Arn': EC2_IAM_INSTANCE_PROFILE},
         SecurityGroupIds=[EC2_SECURITY_GROUP_ID],
         TagSpecifications=[
             {
