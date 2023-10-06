@@ -12,6 +12,8 @@ def scaleServiceUp():
         currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
         print("Current number of messages in the queue " + str(currentQueueSize))
         numberOfPendingOrRunningInstances = ec2Util.getCountOfPendingOrRunningInstances()
+        if numberOfPendingOrRunningInstances is None:
+            numberOfPendingOrRunningInstances = 0
         print("Current number of instances in the app-tier " + str(numberOfPendingOrRunningInstances))
 
         newMessagesDelta = currentQueueSize - prevQueueSize
