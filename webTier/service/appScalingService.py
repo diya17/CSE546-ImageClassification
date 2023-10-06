@@ -1,6 +1,7 @@
 import utils.ec2 as ec2Util
 import utils.sqs as sqsUtil
 import time
+import os
 
 SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
 MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
