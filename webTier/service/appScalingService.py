@@ -31,3 +31,6 @@ class AppScalingService():
             self.appTierInstanceId = (self.appTierInstanceId + 1) % 19
             if self.appTierInstanceId == 0:
                 self.appTierInstanceId = 1
+
+    def scaleServiceDown(self):
+        pass
