@@ -29,6 +29,6 @@ class AppScalingService():
     def createEC2Instances(self, numberOfInstancesToCreate):
         for i in range(1, numberOfInstancesToCreate + 1):
             ec2Util.createEC2Instance(self.appTierInstanceId)
-            self.appTierInstanceId = (appTierInstanceId + 1) % 19
+            self.appTierInstanceId = (self.appTierInstanceId + 1) % 19
             if self.appTierInstanceId == 0:
                 self.appTierInstanceId = 1
