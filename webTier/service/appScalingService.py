@@ -16,7 +16,7 @@ def scaleServiceUp():
 
         newMessagesDelta = currentQueueSize - prevQueueSize
         prevQueueSize = currentQueueSize
-        if newMessagesDelta > MESSAGE_THRESHOLD:
+        if newMessagesDelta > int(MESSAGE_THRESHOLD):
             numberOfInstancesToCreate = min(newMessagesDelta, 19-numberOfPendingOrRunningInstances)
             createEC2Instances(numberOfInstancesToCreate)
         time.sleep(5)
