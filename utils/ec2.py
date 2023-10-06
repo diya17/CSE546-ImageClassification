@@ -39,7 +39,7 @@ def createEC2Instance(instanceNumber):
                     },
                     {
                         'Key': EC2_APP_INSTANCE_NAME_TAG,
-                        'Value': EC2_APP_INSTANCE_NAME_VALUE_PREFIX+instanceNumber,
+                        'Value': EC2_APP_INSTANCE_NAME_VALUE_PREFIX + str(instanceNumber),
                     }
                 ]
             },
