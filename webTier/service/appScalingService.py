@@ -13,19 +13,20 @@ class AppScalingService():
         self.prevQueueSize = 0
         self.appTierInstanceId = 1
     def scaleServiceUp(self):
-        while (True):
-            currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
-            print("Current number of messages in the queue " + str(currentQueueSize))
-            numberOfPendingOrRunningInstances = ec2Util.getCountOfInstances(PENDING_AND_RUNNING_INSTANCES)
-            if numberOfPendingOrRunningInstances is None:
-                numberOfPendingOrRunningInstances = 0
-            print("Current number of instances in the app-tier " + str(numberOfPendingOrRunningInstances))
-            newMessagesDelta = currentQueueSize - self.prevQueueSize
-            self.prevQueueSize = currentQueueSize
-            if newMessagesDelta > 0:
-                numberOfInstancesToCreate = min(newMessagesDelta, 19 - numberOfPendingOrRunningInstances)
-                self.createEC2Instances(numberOfInstancesToCreate)
-            time.sleep(5)
+        # while (True):
+        #     currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
+        #     print("Current number of messages in the queue " + str(currentQueueSize))
+        #     numberOfPendingOrRunningInstances = ec2Util.getCountOfInstances(PENDING_AND_RUNNING_INSTANCES)
+        #     if numberOfPendingOrRunningInstances is None:
+        #         numberOfPendingOrRunningInstances = 0
+        #     print("Current number of instances in the app-tier " + str(numberOfPendingOrRunningInstances))
+        #     newMessagesDelta = currentQueueSize - self.prevQueueSize
+        #     self.prevQueueSize = currentQueueSize
+        #     if newMessagesDelta > 0:
+        #         numberOfInstancesToCreate = min(newMessagesDelta, 19 - numberOfPendingOrRunningInstances)
+        #         self.createEC2Instances(numberOfInstancesToCreate)
+        #     time.sleep(5)
+        pass
 
     def createEC2Instances(self, numberOfInstancesToCreate):
         for i in range(1, numberOfInstancesToCreate + 1):
