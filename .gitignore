@@ -6,3 +6,4 @@ webTier/__pycache__
 webTier/model/__pycache__
 webTier/service/__pycache__
 .DS_Store
+app-instance-classification-kp.pem
