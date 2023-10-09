@@ -5,7 +5,7 @@ sys.path.append("/home/ubuntu/")
 sys.path.append("/home/ubuntu/app-tier/")
 from utils import s3 as s3Util
 from utils import sqs as sqsUtil
-from image_classification import modelInference
+from image_classification import ImageClassifier
 import time
 import multiprocessing
 
@@ -37,6 +37,7 @@ def clearImagesFromLocal():
 
 def processGenerateOutput():
     emptyQueueCounter = 0
+    imageClassifier = ImageClassifier(INPUT_LOCAL_STORAGE_DIR)
 
     while emptyQueueCounter < 3: #Check to determine empty Request SQS queue
         emptyQueueFlag = processDownloadImagesFromS3() #Receive s3 location urls and download images from s3 to local
@@ -45,7 +46,7 @@ def processGenerateOutput():
         else:
             emptyQueueCounter = 0
         
-            outputJson = modelInference(int(BATCH_SIZE)) #Perform Image Classification
+            outputJson = imageClassifier.modelInference(int(BATCH_SIZE)) #Perform Image Classification
             
             outputList = [(imageName, imageResult) for imageName, imageResult in outputJson.items()] #Pushing the outputs parallely to S3 output bucket
             pool = multiprocessing.Pool(processes=len(outputList))

@@ -44,14 +44,14 @@ class AppScalingService():
                 numberOfStoppedInstances = 0
             print("Current number of stopped instances in the app-tier " + str(numberOfStoppedInstances))
             if numberOfStoppedInstances > 0:
-                self.terminateEC2Instances(number_of_instances_to_terminate)
+                self.terminateEC2Instances(numberOfStoppedInstances)
         
     def terminateEC2Instances(self, number_of_instances_to_terminate):
         try:
             instances_to_terminate = ec2Util.getInstancesToStop(number_of_instances_to_terminate, STOPPED_INSTANCES)
             if instances_to_terminate:
                 instance_ids = [instance['InstanceId'] for instance in instances_to_terminate]
-                response = ec2Client.terminate_instances(InstanceIds=instance_ids)
+                response = ec2Util.getInstancesToStop(InstanceIds=instance_ids)
                 if 'TerminatingInstances' in response:
                     for instance in response['TerminatingInstances']:
                         print(f"Terminating Instance with ID: {instance['InstanceId']}")

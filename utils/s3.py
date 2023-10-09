@@ -32,7 +32,7 @@ def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3, userIp):
         s3Client.upload_file(
             fileToUploadPath,
             bucket,
-            fileNameInS3
+            fileNameInS3,
             ExtraArgs={'Tagging': f'userIp={userIp}'}
         )
     except Exception as exception:
@@ -43,7 +43,10 @@ def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3, userIp):
 def downloadImageFromS3ToLocal(s3InputFilePath):
     try:
         key = s3InputFilePath.split('/')[-1]
-        localPath = os.path.join(INPUT_LOCAL_STORAGE_DIR, "user-input", key)
+        response = s3Client.head_object(Bucket=INPUT_BUCKET_NAME, Key=key)
+        userIp = response.get('Tagging', "")
+        fileName = key + ":" + userIp
+        localPath = os.path.join(INPUT_LOCAL_STORAGE_DIR, "user-input", fileName)
         s3Client.download_file(
             INPUT_BUCKET_NAME,
             key,
@@ -56,11 +59,13 @@ def downloadImageFromS3ToLocal(s3InputFilePath):
 
 def addResultObjectToS3(imageName, imageResult):
     try:
+        keyList = imageName.split(":")
         s3Client.put_object(
             Bucket=OUTPUT_BUCKET_NAME,
-            Key=imageName,
+            Key=keyList[0],
             Body=imageResult.encode('utf-8'), 
-            ContentType='text/plain'
+            ContentType='text/plain',
+            ExtraArgs={'Tagging': f'userIp={keyList[1]}'}
         )
     except Exception as exception:
         print("Exception in uploading result from App Instance", exception)

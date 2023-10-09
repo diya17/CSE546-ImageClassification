@@ -6,7 +6,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from torch.utils.data import Dataset, DataLoader
-from urllib.request import urlopen
 from PIL import Image
 import numpy as np
 import json
@@ -33,32 +32,34 @@ class CustomImageDataset(Dataset):
         return image, img_name
 
 
-def modelInference(batch_size):
-    start_time = time.time()
+class ImageClassifier():
+    def __init__(self, rootDirectory):
+        self.dataDirectory = os.path.join(rootDirectory, "user-input")
+        self.transform = transforms.Compose([transforms.ToTensor()])
+        self.model = models.resnet18(pretrained=True)
+        self.jsonPath = os.path.join(rootDirectory, "imagenet-labels.json")
 
-    transform = transforms.Compose([transforms.ToTensor()])
-    dataset = CustomImageDataset('/home/ubuntu/app-tier/user-input/', 
-    transform=transform)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    def modelInference(self, batch_size):
+        start_time = time.time()
+        dataset = CustomImageDataset(self.dataDirectory, transform=self.transform)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
-    model = models.resnet18(pretrained=True)
+        self.model.eval()
 
-    model.eval()
+        save_dict = dict()
+        for batch in dataloader:
+            images, filenames = batch
+            outputs = self.model(images)
+            _, predicted = torch.max(outputs.data, 1)
+            with open(self.jsonPath) as f:
+                labels = json.load(f)
+            for idx, pred in enumerate(predicted):
+                result = labels[np.array(pred)]
+                imgName = filenames[idx]
+                save_dict[imgName]=result
 
-    save_dict = dict()
-    for batch in dataloader:
-        images, filenames = batch
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        with open('/home/ubuntu/app-tier/imagenet-labels.json') as f:
-            labels = json.load(f)
-        for idx, pred in enumerate(predicted):
-            result = labels[np.array(pred)]
-            img_name = filenames[idx]
-            save_dict[img_name]=result
-
-    end_time = time.time()
-    inference_time = end_time - start_time
-    print(save_dict)
-    print(f"Inference time: {inference_time} seconds")
-    return save_dict
+        end_time = time.time()
+        inference_time = end_time - start_time
+        print(save_dict)
+        print(f"Inference time: {inference_time} seconds")
+        return save_dict
