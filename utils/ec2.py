@@ -27,6 +27,7 @@ def createEC2Instance(instanceNumber):
         MaxCount=1,
         InstanceType=EC2_INSTANCE_TYPE,
         SecurityGroupIds=[EC2_SECURITY_GROUP_ID],
+        Placement={'AvailabilityZone': 'us-east-1d'},
         TagSpecifications=[
             {
                 'ResourceType': 'instance',
@@ -65,6 +66,10 @@ def getCountOfInstances(state):
             {
                 'Name': 'instance-state-name',
                 'Values': state
+            },
+            {
+                'Name': 'availability-zone',
+                'Values': ['us-east-1d']
             }
         ]
     )
