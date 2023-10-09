@@ -32,8 +32,12 @@ def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3, userIp):
         s3Client.upload_file(
             fileToUploadPath,
             bucket,
-            fileNameInS3,
-            ExtraArgs={'Tagging': f'userIp={userIp}'}
+            fileNameInS3
+        )
+        s3Client.put_object_tagging(
+            Bucket=bucket,
+            Key=fileNameInS3,
+            Tagging={'TagSet': [{'Key': 'UserIP', 'Value': userIp}]}
         )
     except Exception as exception:
         print("Exception in uploading file from API", exception)
@@ -43,8 +47,13 @@ def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3, userIp):
 def downloadImageFromS3ToLocal(s3InputFilePath):
     try:
         key = s3InputFilePath.split('/')[-1]
-        response = s3Client.head_object(Bucket=INPUT_BUCKET_NAME, Key=key)
-        userIp = response.get('Tagging', "")
+        response = s3Client.get_object_tagging(
+            Bucket=INPUT_BUCKET_NAME,
+            Key=key
+        )
+        for tag in response['TagSet']:
+            if tag['Key'] == 'UserIP':
+                userIp = tag['Value']
         fileName = key + ":" + userIp
         localPath = os.path.join(INPUT_LOCAL_STORAGE_DIR, "user-input", fileName)
         s3Client.download_file(
