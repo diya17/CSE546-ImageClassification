@@ -73,9 +73,7 @@ def getCountOfInstances(state):
             }
         ]
     )
-    for reservation in ec2Response["Reservations"]:
-        print(reservation['Instances'])
-        return len(reservation['Instances'])
+    return len(ec2Response["Reservations"])
 
 def getInstancesToStop(number_to_stop, stopped_states):
     """
