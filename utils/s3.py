@@ -27,12 +27,13 @@ def addImageToS3ForWeb(fileToUpload, bucket):
         return exception
     return "{}{}".format(S3_FILE_LOCATION, fileToUpload.filename)
 
-def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3):
+def addImageToS3ForAPI(fileToUploadPath, bucket, fileNameInS3, userIp):
     try:
         s3Client.upload_file(
             fileToUploadPath,
             bucket,
             fileNameInS3
+            ExtraArgs={'Tagging': f'userIp={userIp}'}
         )
     except Exception as exception:
         print("Exception in uploading file from API", exception)
