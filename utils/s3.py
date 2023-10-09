@@ -54,6 +54,8 @@ def downloadImageFromS3ToLocal(s3InputFilePath):
         for tag in response['TagSet']:
             if tag['Key'] == 'UserIP':
                 userIp = tag['Value']
+            else:
+                userIp = ""
         fileName = key + ":" + userIp
         localPath = os.path.join(INPUT_LOCAL_STORAGE_DIR, "user-input", fileName)
         s3Client.download_file(
@@ -72,9 +74,13 @@ def addResultObjectToS3(imageName, imageResult):
         s3Client.put_object(
             Bucket=OUTPUT_BUCKET_NAME,
             Key=keyList[0],
-            Body=imageResult.encode('utf-8'), 
-            ContentType='text/plain',
-            ExtraArgs={'Tagging': f'userIp={keyList[1]}'}
+            Body=imageResult.encode('utf-8'),
+            ContentType='text/plain'
+        )
+        s3Client.put_object_tagging(
+            Bucket=OUTPUT_BUCKET_NAME,
+            Key=keyList[0],
+            Tagging={'TagSet': [{'Key': 'UserIP', 'Value': keyList[1]}]}
         )
     except Exception as exception:
         print("Exception in uploading result from App Instance", exception)
