@@ -71,3 +71,30 @@ def getCountOfInstances(state):
     for reservation in ec2Response["Reservations"]:
         print(reservation['Instances'])
         return len(reservation['Instances'])
+
+def getInstancesToStop(number_to_stop, stopped_states):
+    """
+    Get a list of EC2 instances to stop based on specified states and STOPPED_INSTANCES criteria.
+
+    :param number_to_stop: The number of instances to stop.
+    :param stopped_states: List of EC2 instance states considered as "stopped."
+    :return: List of instances to stop.
+    """
+    try:
+        instances_to_stop = []
+
+        ec2Response = ec2Client.describe_instances(
+            Filters=[
+                {'Name': 'tag:{0}'.format(EC2_TAG_KEY_GROUP), 'Values': [EC2_TAG_VALUE_GROUP]},
+                {'Name': 'instance-state-name', 'Values': stopped_states}
+            ]
+        )
+
+        for reservation in ec2Response["Reservations"]:
+            instances_to_stop.extend(reservation['Instances'])
+
+        instances_to_stop.sort(key=lambda x: x['LaunchTime'])
+        return instances_to_stop[:number_to_stop]
+    except Exception as e:
+        print(f"Error getting instances to stop: {str(e)}")
+        return []
