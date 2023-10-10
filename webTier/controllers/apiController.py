@@ -22,7 +22,7 @@ def uploadFiles():
         return result
     return "Invalid File Upload"
 @app.route('/api/upload/file', methods=['POST'])
-def uploadFiles():
+def uploadFile():
     userIp = request.remote_addr
     if userIp:
         resultFileName = uploadService.processUploadFileForApi([request.files.get("myfile")], userIp, usersToFileMap, 1)
