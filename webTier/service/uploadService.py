@@ -28,6 +28,7 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
         for uploadedFile in uploadedFilesList:
             if len(uploadedFile.filename) > 0:
                 fileName = secure_filename(uploadedFile.filename)
+                print(fileName)
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
                 os.makedirs(userDir, exist_ok=True)
                 uploadedFile.save(os.path.join(userDir, fileName))

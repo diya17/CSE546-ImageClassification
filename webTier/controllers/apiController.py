@@ -18,6 +18,7 @@ def uploadFiles():
 @app.route('/api/upload/file', methods=['POST'])
 def uploadFile():
     userIp = request.remote_addr
+    print("Uploading file")
     if userIp:
         resultFileName = uploadService.processUploadFileForApi([request.files.get("myfile")], userIp, usersToFileMap, 1, True)
         result = resultsService.generateResultForFile(resultFileName)
