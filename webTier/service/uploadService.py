@@ -32,6 +32,7 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
                 fileName = secure_filename(uploadedFile.filename)
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
                 os.makedirs(userDir, exist_ok=True)
+                print(userDir)
                 uploadedFile.save(os.path.join(userDir, fileName))
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME,
                                                             fileName, userIp)
