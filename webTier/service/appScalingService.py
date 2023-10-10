@@ -7,6 +7,7 @@ SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_I
 MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
 PENDING_AND_RUNNING_INSTANCES = ["pending", "running"]
 STOPPED_INSTANCES = ["stopped"]
+INSTANCE_THRESHOLD = 19
 class AppScalingService():
 
     def __init__(self):
@@ -23,7 +24,7 @@ class AppScalingService():
             newMessagesDelta = currentQueueSize - self.prevQueueSize
             self.prevQueueSize = currentQueueSize
             if newMessagesDelta > 0:
-                numberOfInstancesToCreate = min(newMessagesDelta, 19 - numberOfPendingOrRunningInstances)
+                numberOfInstancesToCreate = min(newMessagesDelta, INSTANCE_THRESHOLD - numberOfPendingOrRunningInstances)
                 self.createEC2Instances(numberOfInstancesToCreate)
             time.sleep(5)
         pass
@@ -37,30 +38,20 @@ class AppScalingService():
 
     def scaleServiceDown(self):
         while True:
-            currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
-            print("Current number of messages in the queue " + str(currentQueueSize))
-            
             numberOfStoppedInstances = ec2Util.getCountOfInstances(STOPPED_INSTANCES)
             if numberOfStoppedInstances is None:
                 numberOfStoppedInstances = 0
             print("Current number of stopped instances in the app-tier " + str(numberOfStoppedInstances))
             if numberOfStoppedInstances > 0:
-                pass
-                #self.terminateEC2Instances(numberOfStoppedInstances)
+                self.terminateEC2Instances()
         
-    def terminateEC2Instances(self, number_of_instances_to_terminate):
+    def terminateEC2Instances(self):
         try:
-            instances_to_terminate = ec2Util.getInstancesToStop(number_of_instances_to_terminate, STOPPED_INSTANCES)
-            if instances_to_terminate:
-                instance_ids = [instance['InstanceId'] for instance in instances_to_terminate]
-                response = ec2Util.getInstancesToStop(InstanceIds=instance_ids)
-                if 'TerminatingInstances' in response:
-                    for instance in response['TerminatingInstances']:
-                        print(f"Terminating Instance with ID: {instance['InstanceId']}")
-                else:
-                    print("Failed to terminate instances.")
+            instancesToTerminate = ec2Util.getInstancesToStop(STOPPED_INSTANCES)
+            if instancesToTerminate:
+                instanceIds = [instance['InstanceId'] for instance in instancesToTerminate]
+                ec2Util.terminateInstances(instanceIds)
             else:
                 print("No instances to terminate.")
         except Exception as e:
             print(f"Error terminating instances: {str(e)}")
-

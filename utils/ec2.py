@@ -75,29 +75,30 @@ def getCountOfInstances(state):
     )
     return len(ec2Response["Reservations"])
 
-def getInstancesToStop(number_to_stop, stopped_states):
-    """
-    Get a list of EC2 instances to stop based on specified states and STOPPED_INSTANCES criteria.
-
-    :param number_to_stop: The number of instances to stop.
-    :param stopped_states: List of EC2 instance states considered as "stopped."
-    :return: List of instances to stop.
-    """
+def getInstancesToStop(stoppedStates):
     try:
-        instances_to_stop = []
+        instancesToStop = []
 
         ec2Response = ec2Client.describe_instances(
             Filters=[
                 {'Name': 'tag:{0}'.format(EC2_TAG_KEY_GROUP), 'Values': [EC2_TAG_VALUE_GROUP]},
-                {'Name': 'instance-state-name', 'Values': stopped_states}
+                {'Name': 'instance-state-name', 'Values': stoppedStates}
             ]
         )
-
         for reservation in ec2Response["Reservations"]:
-            instances_to_stop.extend(reservation['Instances'])
-
-        instances_to_stop.sort(key=lambda x: x['LaunchTime'])
-        return instances_to_stop[:number_to_stop]
+            instancesToStop.extend(reservation['Instances'])
+        instancesToStop.sort(key=lambda x: x['LaunchTime'])
+        return instancesToStop
     except Exception as e:
         print(f"Error getting instances to stop: {str(e)}")
         return []
+
+def terminateInstances(instanceIds):
+    ec2Response = ec2Client.terminateInstances(
+        InstanceIds=instanceIds
+    )
+    if 'TerminatingInstances' in ec2Response:
+        for instance in ec2Response['TerminatingInstances']:
+            print(f"Terminating Instance with ID: {instance['InstanceId']}")
+    else:
+        print("Failed to terminate instances.")
