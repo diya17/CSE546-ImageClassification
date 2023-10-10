@@ -1,5 +1,6 @@
 import boto3
 import os
+import time
 
 AWS_REGION = os.getenv("AWS_REGION")
 SQS_SERVICE = os.getenv("SQS_SERVICE")
