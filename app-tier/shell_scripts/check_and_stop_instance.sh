@@ -14,5 +14,5 @@ if [ $emptyQueueCounter -ge 3 ]; then
     instanceId=$(ec2metadata --instance-id)
     /home/ubuntu/.local/bin/aws ec2 stop-instances --instance-ids $instanceId --region us-east-1
 
-    echo "" > /home/ubuntu/app-tier/emptyQueueCounter.txt
+    echo "" > /home/ubuntu/CSE546-ImageClassification/app-tier/emptyQueueCounter.txt
 fi
