@@ -13,6 +13,7 @@ class AppScalingService():
     def __init__(self):
         self.prevQueueSize = 0
         self.appTierInstanceId = 1
+
     def scaleServiceUp(self):
         while (True):
             currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
@@ -24,9 +25,9 @@ class AppScalingService():
             newMessagesDelta = currentQueueSize - self.prevQueueSize
             self.prevQueueSize = currentQueueSize
             if newMessagesDelta > 0:
-                numberOfInstancesToCreate = min(newMessagesDelta, INSTANCE_THRESHOLD - numberOfPendingOrRunningInstances)
+                numberOfInstancesToCreate = min(max(newMessagesDelta//MESSAGE_THRESHOLD, 1), INSTANCE_THRESHOLD - numberOfPendingOrRunningInstances)
                 self.createEC2Instances(numberOfInstancesToCreate)
-            time.sleep(5)
+            time.sleep(3)
         pass
 
     def createEC2Instances(self, numberOfInstancesToCreate):
