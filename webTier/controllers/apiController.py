@@ -10,6 +10,6 @@ def uploadFile():
     userIp = request.remote_addr
     if userIp:
         uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap, True)
-    print(usersToFileMap)
+
     return jsonify({'message': 'File uploaded successfully'})
 
