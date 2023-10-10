@@ -2,6 +2,7 @@ import collections
 from flask import request,jsonify
 from webTier import app
 from webTier.service import uploadService as uploadService
+from webTier.service import resultsService as resultsService
 
 usersToFileMap = collections.defaultdict(set)
 
@@ -11,5 +12,6 @@ def uploadFile():
     if userIp:
         uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap, True)
     print(usersToFileMap)
-    return jsonify({'message': 'File uploaded successfully'})
+    result = resultsService.generateResultsForUser(userIp, usersToFileMap)
+    return jsonify(result)
 

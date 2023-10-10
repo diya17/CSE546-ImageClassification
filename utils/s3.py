@@ -86,3 +86,24 @@ def addResultObjectToS3(imageName, imageResult):
         print("Exception in uploading result from App Instance", exception)
         return exception
     return "{}{}".format(OUTPUT_S3_FILE_LOCATION, imageName)
+
+def retrieveResultObjectFromS3(s3OutputFilePath):
+    try:
+        key = s3OutputFilePath.split('/')[-1]
+        response = s3Client.get_object_tagging(
+            Bucket=OUTPUT_BUCKET_NAME,
+            Key=key
+        )
+        for tag in response['TagSet']:
+            if tag['Key'] == 'UserIP':
+                userIp = tag['Value']
+            else:
+                userIp = ""
+     
+        response = s3Client.get_object(Bucket=OUTPUT_BUCKET_NAME, Key=key)
+        result = response['Body'].read().decode('utf-8')
+
+    except Exception as exception:
+        print("Exception in downloading file to local", exception)
+        return exception
+    return [userIp, key, result]

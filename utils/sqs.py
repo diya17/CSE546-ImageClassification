@@ -35,6 +35,7 @@ def receiveImageUrlFromSQS(sqsQueueUrl):
                 QueueUrl=SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, ReceiptHandle=message["ReceiptHandle"]
             )
     return receivedItems
+
 def getNumberOfQueueMessages(queueURL):
     sqsResponse = sqsClient.get_queue_attributes(
         QueueUrl= SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL,
