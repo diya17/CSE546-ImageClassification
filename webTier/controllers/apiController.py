@@ -15,8 +15,7 @@ def uploadFiles():
             result = resultsService.generateResultsForUser(userIp, usersToFileMap)
             return jsonify(result)
         elif len(request.files.getlist('files')) == 1:
-            resultFileName = uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap,
-                                                  len(request.files.getlist('files')))
+            resultFileName = uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap, len(request.files.getlist('files')))
             result = resultsService.generateResultForFile(resultFileName)
-            print(result)
             return result
+    return "Invalid File Upload"
