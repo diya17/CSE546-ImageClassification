@@ -106,4 +106,4 @@ def retrieveResultObjectFromS3(s3OutputFilePath):
     except Exception as exception:
         print("Exception in downloading file to local", exception)
         return exception
-    return [userIp, key, result]
+    return (userIp, key, result)
