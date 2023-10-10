@@ -14,10 +14,11 @@ def generateResultsForUser(userIp, usersToFileMap):
         outputURLs = sqsService.receiveImageUrlFromSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
         
         for outputURL in outputURLs:
-            [result_userIp, result_key, image_classification] = s3Service.retrieveResultObjectFromS3(outputURL)
-            if result_userIp == userIp:
-                image_result = {result_key: image_classification}
-                userResultMap[userIp].append(image_result)
+            if s3Service.retrieveResultObjectFromS3(outputURL) is not None:
+                [result_userIp, result_key, image_classification] = s3Service.retrieveResultObjectFromS3(outputURL)
+                if result_userIp == userIp:
+                    image_result = {result_key: image_classification}
+                    userResultMap[userIp].append(image_result)
     del(usersToFileMap[userIp])
     for image_result in userResultMap[userIp]:
         print(f"User: {userIp}, Result: {image_result}")
