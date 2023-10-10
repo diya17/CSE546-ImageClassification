@@ -21,8 +21,9 @@ def generateResultsForUser(userIp, usersToFileMap):
     del(usersToFileMap[userIp])
     for image_result in userResultMap[userIp]:
         print(f"User: {userIp}, Result: {image_result}")
-
-    return userResultMap[userIp]
+    result = userResultMap[userIp]
+    del(userResultMap[userIp])
+    return result
 
 
         
