@@ -32,7 +32,7 @@ def receiveImageUrlFromSQS(sqsQueueUrl):
             receivedItem = message["Body"]
             receivedItems.append(receivedItem)
             sqsClient.delete_message(
-                QueueUrl=SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, ReceiptHandle=message["ReceiptHandle"]
+                QueueUrl=sqsQueueUrl, ReceiptHandle=message["ReceiptHandle"]
             )
     return receivedItems
 
