@@ -11,7 +11,7 @@ def generateResultsForUser(userIp, usersToFileMap):
         userResultMap[userIp] = []
 
     while len(userResultMap[userIp]) < len(usersToFileMap[userIp]):
-        outputURLs = sqsService.receiveImageUrlFromSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
+        outputURLs = sqsService.receiveImageUrlFromSQS(SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL)
         
         for outputURL in outputURLs:
             if s3Service.retrieveResultObjectFromS3(outputURL) is not None:
