@@ -11,7 +11,6 @@ def uploadFile():
     userIp = request.remote_addr
     if userIp:
         uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap, True)
-    print(usersToFileMap)
     result = resultsService.generateResultsForUser(userIp, usersToFileMap)
     return jsonify(result)
 

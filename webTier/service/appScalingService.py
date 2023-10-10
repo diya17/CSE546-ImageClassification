@@ -4,7 +4,7 @@ import time
 import os
 
 SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
-MESSAGE_THRESHOLD = os.getenv("MESSAGE_THRESHOLD")
+MESSAGE_THRESHOLD = int(os.getenv("MESSAGE_THRESHOLD"))
 PENDING_AND_RUNNING_INSTANCES = ["pending", "running"]
 STOPPED_INSTANCES = ["stopped"]
 INSTANCE_THRESHOLD = 19
@@ -13,6 +13,7 @@ class AppScalingService():
     def __init__(self):
         self.prevQueueSize = 0
         self.appTierInstanceId = 1
+
     def scaleServiceUp(self):
         while (True):
             currentQueueSize = sqsUtil.getNumberOfQueueMessages(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL)
@@ -24,9 +25,9 @@ class AppScalingService():
             newMessagesDelta = currentQueueSize - self.prevQueueSize
             self.prevQueueSize = currentQueueSize
             if newMessagesDelta > 0:
-                numberOfInstancesToCreate = min(newMessagesDelta, INSTANCE_THRESHOLD - numberOfPendingOrRunningInstances)
+                numberOfInstancesToCreate = min(max(newMessagesDelta//MESSAGE_THRESHOLD, 1), INSTANCE_THRESHOLD - numberOfPendingOrRunningInstances)
                 self.createEC2Instances(numberOfInstancesToCreate)
-            time.sleep(5)
+            time.sleep(3)
         pass
 
     def createEC2Instances(self, numberOfInstancesToCreate):
@@ -44,6 +45,7 @@ class AppScalingService():
             print("Current number of stopped instances in the app-tier " + str(numberOfStoppedInstances))
             if numberOfStoppedInstances > 0:
                 self.terminateEC2Instances()
+            time.sleep(5)
         
     def terminateEC2Instances(self):
         try:

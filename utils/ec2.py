@@ -94,7 +94,7 @@ def getInstancesToStop(stoppedStates):
         return []
 
 def terminateInstances(instanceIds):
-    ec2Response = ec2Client.terminateInstances(
+    ec2Response = ec2Client.terminate_instances(
         InstanceIds=instanceIds
     )
     if 'TerminatingInstances' in ec2Response:
