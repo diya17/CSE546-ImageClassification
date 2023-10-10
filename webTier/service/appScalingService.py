@@ -45,6 +45,7 @@ class AppScalingService():
             print("Current number of stopped instances in the app-tier " + str(numberOfStoppedInstances))
             if numberOfStoppedInstances > 0:
                 self.terminateEC2Instances()
+            time.sleep(5)
         
     def terminateEC2Instances(self):
         try:
