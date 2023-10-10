@@ -18,7 +18,7 @@ def generateResultsForUser(userIp, usersToFileMap):
             if result_userIp == userIp:
                 image_result = {result_key: image_classification}
                 userResultMap[userIp].append(image_result)
-
+    del(usersToFileMap[userIp])
     for image_result in userResultMap[userIp]:
         print(f"User: {userIp}, Result: {image_result}")
 
