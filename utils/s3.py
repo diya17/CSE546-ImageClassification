@@ -85,7 +85,7 @@ def addResultObjectToS3(imageName, imageResult):
     except Exception as exception:
         print("Exception in uploading result from App Instance", exception)
         return exception
-    return "{}{}".format(OUTPUT_S3_FILE_LOCATION, imageName)
+    return "{}{}".format(OUTPUT_S3_FILE_LOCATION, keyList[0])
 
 def retrieveResultObjectFromS3(s3OutputFilePath):
     try:
@@ -105,7 +105,7 @@ def retrieveResultObjectFromS3(s3OutputFilePath):
         result = response['Body'].read().decode('utf-8')
         print(userIp)
         print(result)
-        return (userIp, key, result)
     except Exception as exception:
         print("Exception in downloading file to local", exception)
         return exception
+    return (userIp, key, result)
