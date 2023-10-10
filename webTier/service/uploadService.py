@@ -34,6 +34,7 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
                 uploadedFile.save(os.path.join(userDir, fileName))
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME,
                                                             fileName, userIp)
+                print(uploadedS3Image)
                 sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image,
                                                 SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
                 os.remove(os.path.join(userDir, fileName))
