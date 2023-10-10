@@ -27,8 +27,6 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
     if numberOfFiles == 1 and workLoadReq:
         for uploadedFile in uploadedFilesList:
             print(uploadedFile.filename)
-            if uploadedFile.content_type != 'image/jpeg' and uploadedFile.content_type != 'image/png':
-                continue
             if len(uploadedFile.filename) > 0:
                 fileName = secure_filename(uploadedFile.filename)
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
