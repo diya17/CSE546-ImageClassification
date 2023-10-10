@@ -102,8 +102,10 @@ def retrieveResultObjectFromS3(s3OutputFilePath):
      
         response = s3Client.get_object(Bucket=OUTPUT_BUCKET_NAME, Key=key)
         result = response['Body'].read().decode('utf-8')
-
+        print(key)
+        print(userIp)
+        print(result)
+        return (userIp, key, result)
     except Exception as exception:
         print("Exception in downloading file to local", exception)
         return exception
-    return (userIp, key, result)
