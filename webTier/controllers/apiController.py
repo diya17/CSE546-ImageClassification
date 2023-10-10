@@ -9,6 +9,7 @@ usersToFileMap = collections.defaultdict(set)
 @app.route('/api/upload', methods=['POST'])
 def uploadFiles():
     userIp = request.remote_addr
+    print(request.files.get("myfile"))
     print(len(request.files.getlist('files')))
     print(userIp)
     if userIp:
