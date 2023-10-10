@@ -5,6 +5,7 @@ from utils import sqs as sqsService
 
 SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL")
 userResultMap = {}
+resultMap = {}
 
 def generateResultsForUser(userIp, usersToFileMap):
     if not userResultMap.get(userIp):
@@ -25,6 +26,12 @@ def generateResultsForUser(userIp, usersToFileMap):
     del(userResultMap[userIp])
     return result
 
+def generateResultForFile(resultFile):
+    while True:
+        outputURLs = sqsService.receiveImageUrlFromSQS(SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL)
 
-        
-    
+        for outputURL in outputURLs:
+            resultUserIp, resultKey, imageClassification = s3Service.retrieveResultObjectFromS3(outputURL)
+            resultMap[resultKey] = imageClassification
+        if resultFile in resultMap.keys():
+            return resultMap[resultFile]

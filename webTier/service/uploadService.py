@@ -23,8 +23,22 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
 
     return uploadedFilesForm, listOfFiles
 
-def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, apiRequest):
-    if apiRequest:
+def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOfFiles):
+    if numberOfFiles == 1:
+        for uploadedFile in uploadedFilesList:
+            if uploadedFile.content_type != 'image/jpeg' and uploadedFile.content_type != 'image/png':
+                continue
+            if len(uploadedFile.filename) > 0:
+                fileName = secure_filename(uploadedFile.filename)
+                userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
+                os.makedirs(userDir, exist_ok=True)
+                uploadedFile.save(os.path.join(userDir, fileName))
+                uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME,
+                                                            fileName, userIp)
+                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image,
+                                                SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
+                return fileName
+    else:
         for uploadedFile in uploadedFilesList:
             if uploadedFile.content_type != 'image/jpeg' and uploadedFile.content_type != 'image/png':
                 continue
@@ -35,5 +49,4 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, apiReque
                 uploadedFile.save(os.path.join(userDir, fileName))
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME, fileName, userIp)
                 usersToFilesMap[userIp].add(fileName)
-                print(uploadedS3Image)
                 sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
