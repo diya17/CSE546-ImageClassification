@@ -23,9 +23,10 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
 
     return uploadedFilesForm, listOfFiles
 
-def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOfFiles):
-    if numberOfFiles == 1:
+def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOfFiles, workLoadReq):
+    if numberOfFiles == 1 and workLoadReq:
         for uploadedFile in uploadedFilesList:
+            print(uploadedFile.filename)
             if uploadedFile.content_type != 'image/jpeg' and uploadedFile.content_type != 'image/png':
                 continue
             if len(uploadedFile.filename) > 0:
