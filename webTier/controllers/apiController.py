@@ -18,4 +18,5 @@ def uploadFiles():
             resultFileName = uploadService.processUploadFileForApi(request.files.getlist('files'), userIp, usersToFileMap,
                                                   len(request.files.getlist('files')))
             result = resultsService.generateResultForFile(resultFileName)
+            print(result)
             return result
