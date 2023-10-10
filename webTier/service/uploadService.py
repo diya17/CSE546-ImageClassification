@@ -17,7 +17,6 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
         if len(uploadedFile.filename) > 0:
             fileName = secure_filename(uploadedFile.filename)
             uploadedS3Image = s3Util.addImageToS3ForWeb(uploadedFile, INPUT_BUCKET_NAME)
-            print(uploadedS3Image)
             sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
             listOfFiles.append(fileName)
 
@@ -28,7 +27,6 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
         for uploadedFile in uploadedFilesList:
             if len(uploadedFile.filename) > 0:
                 fileName = secure_filename(uploadedFile.filename)
-                print(fileName)
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
                 os.makedirs(userDir, exist_ok=True)
                 uploadedFile.save(os.path.join(userDir, fileName))
