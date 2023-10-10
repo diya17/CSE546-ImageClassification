@@ -34,4 +34,6 @@ def generateResultForFile(resultFile):
             resultUserIp, resultKey, imageClassification = s3Service.retrieveResultObjectFromS3(outputURL)
             resultMap[resultKey] = imageClassification
         if resultFile in resultMap.keys():
-            return resultMap[resultFile]
+            result = resultMap[resultFile]
+            del(resultMap[resultFile])
+            return result

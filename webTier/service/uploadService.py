@@ -26,12 +26,10 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
 def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOfFiles, workLoadReq):
     if numberOfFiles == 1 and workLoadReq:
         for uploadedFile in uploadedFilesList:
-            print(uploadedFile.filename)
             if len(uploadedFile.filename) > 0:
                 fileName = secure_filename(uploadedFile.filename)
                 userDir = os.path.join(INPUT_LOCAL_STORAGE_DIR, userIp)
                 os.makedirs(userDir, exist_ok=True)
-                print(userDir)
                 uploadedFile.save(os.path.join(userDir, fileName))
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME,
                                                             fileName, userIp)
