@@ -3,7 +3,7 @@ import os
 from utils import s3 as s3Service
 from utils import sqs as sqsService
 
-SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL")
+SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL = os.getenv("SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL")
 userResultMap = {}
 
 def generateResultsForUser(userIp, usersToFileMap):
