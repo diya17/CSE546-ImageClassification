@@ -55,7 +55,7 @@ def processGenerateOutput():
             pool.join()
 
             for s3PathToFile in s3PathList: #Passing the S3 location URLs corresponding to the outputs sequentially to the Response SQS queue
-                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL, s3PathToFile, SQS_IMAGE_CLASSIFICATION_OUTPUT_MESSAGE_GROUP_ID, False)
+                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_OUTPUT_QUEUE_URL, s3PathToFile, SQS_IMAGE_CLASSIFICATION_OUTPUT_MESSAGE_GROUP_ID)
             
             clearImagesFromLocal() #Clear all images in the local directory once processing is finished
 

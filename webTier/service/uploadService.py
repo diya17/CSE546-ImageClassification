@@ -18,7 +18,7 @@ def processUploadFileForWeb(listOfFiles, uploadedFilesList, uploadedFilesForm):
             fileName = secure_filename(uploadedFile.filename)
             uploadedS3Image = s3Util.addImageToS3ForWeb(uploadedFile, INPUT_BUCKET_NAME)
             print(uploadedS3Image)
-            sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID, True)
+            sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
             listOfFiles.append(fileName)
 
     return uploadedFilesForm, listOfFiles
@@ -35,7 +35,7 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME,
                                                             fileName, userIp)
                 sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image,
-                                                SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID, True)
+                                                SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
                 os.remove(os.path.join(userDir, fileName))
                 return fileName
     else:
@@ -49,5 +49,5 @@ def processUploadFileForApi(uploadedFilesList, userIp, usersToFilesMap, numberOf
                 uploadedFile.save(os.path.join(userDir, fileName))
                 uploadedS3Image = s3Util.addImageToS3ForAPI(os.path.join(userDir, fileName), INPUT_BUCKET_NAME, fileName, userIp)
                 usersToFilesMap[userIp].add(fileName)
-                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID, True)
+                sqsUtil.sendImageFileInputToSQS(SQS_IMAGE_CLASSIFICATION_INPUT_QUEUE_URL, uploadedS3Image, SQS_IMAGE_CLASSIFICATION_INPUT_MESSAGE_GROUP_ID)
                 os.remove(os.path.join(userDir, fileName))
