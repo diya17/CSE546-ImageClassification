@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import os
 import sys
-sys.path.append("/home/ubuntu/")
-sys.path.append("/home/ubuntu/app-tier/")
+sys.path.append("/home/ubuntu/CSE546-ImageClassification/")
+sys.path.append("/home/ubuntu/CSE546-ImageClassification/app-tier/")
 from utils import s3 as s3Util
 from utils import sqs as sqsUtil
 from image_classification import ImageClassifier
@@ -38,6 +38,8 @@ def clearImagesFromLocal():
 def processGenerateOutput():
     emptyQueueCounter = 0
     imageClassifier = ImageClassifier(INPUT_LOCAL_STORAGE_DIR)
+    if not os.path.exists(os.path.join(INPUT_LOCAL_STORAGE_DIR,"user-input")):
+        os.makedirs(os.path.join(INPUT_LOCAL_STORAGE_DIR,"user-input"))
 
     while emptyQueueCounter < 3: #Check to determine empty Request SQS queue
         emptyQueueFlag = processDownloadImagesFromS3() #Receive s3 location urls and download images from s3 to local

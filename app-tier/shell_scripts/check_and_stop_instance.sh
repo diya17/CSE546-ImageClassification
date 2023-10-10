@@ -1,6 +1,6 @@
 #!/bin/bash
 
-emptyQueueCounter=$(cat /home/ubuntu/app-tier/emptyQueueCounter.txt)
+emptyQueueCounter=$(cat /home/ubuntu/CSE546-ImageClassification/app-tier/emptyQueueCounter.txt)
 
 if [ -z "$emptyQueueCounter" ] || ! [[ "$emptyQueueCounter" =~ ^[0-9]+$ ]]; then
     echo "emptyQueueCounter is not a valid number or is empty."
