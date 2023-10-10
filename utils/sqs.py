@@ -23,7 +23,7 @@ def receiveImageUrlFromSQS(sqsQueueUrl):
         MaxNumberOfMessages=int(MESSAGE_THRESHOLD),
         MessageAttributeNames=['All'],
         VisibilityTimeout=1,
-        WaitTimeSeconds=10
+        WaitTimeSeconds=7
     )
     if "Messages" not in response:
         pass
