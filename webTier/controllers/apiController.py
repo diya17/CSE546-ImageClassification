@@ -21,3 +21,11 @@ def uploadFiles():
         result = resultsService.generateResultForFile(resultFileName)
         return result
     return "Invalid File Upload"
+@app.route('/api/upload/file', methods=['POST'])
+def uploadFiles():
+    userIp = request.remote_addr
+    if userIp:
+        resultFileName = uploadService.processUploadFileForApi([request.files.get("myfile")], userIp, usersToFileMap, 1)
+        result = resultsService.generateResultForFile(resultFileName)
+        return result
+    return "Invalid File Upload"
